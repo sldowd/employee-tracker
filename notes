@@ -1,0 +1,21 @@
+prompt questions on start:
+    view all departments
+    view all roles
+    view all employees
+    add a department
+    add an employee
+    update an employee role
+
+view all departments --> table with dept names and dept ids
+
+view all roles --> show job title, role id, department role belongs to, and salary for role
+
+view all employees --> formatted table w employee data
+    employee data 
+        employee id
+        first name
+        last name
+        job title
+        department
+        salary
+        & 

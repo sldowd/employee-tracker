@@ -1,4 +1,4 @@
-const prompt = require('inquirer');
+const { prompt } = require('inquirer');
 const db = require('./db');
 
 init();
@@ -42,6 +42,10 @@ function loadMainPrompts() {
                     name: 'Update an Employee Role',
                     value: 'update_emp'
                 },
+                {
+                    name: 'Exit Program',
+                    value: 'quit'
+                }
             ]
         }
 
@@ -64,29 +68,31 @@ function loadMainPrompts() {
             break;
             case 'update_emp': updateEmployee();
             break;
+            case 'quit': exitProgram();
+            break;
         }
     })
 }
 
 function viewDepartments() {
-    db.findAllDepartments
+    db.findAllDepartments()
     .then(([rows]) => {
         let departments = rows;
         console.log("\n");
         console.table(departments);
       })
       .then(() => loadMainPrompts());
-}
+};
 
 function viewRoles() {
-    db.findAllRoles
+    db.findAllRoles()
     .then(([rows]) => {
         let roles = rows;
         console.log("\n");
         console.table(roles);
       })
       .then(() => loadMainPrompts());
-}
+};
 
 function viewEmployees() {
     //view all employees
@@ -97,21 +103,46 @@ function viewEmployees() {
       console.table(employees);
     })
     .then(() => loadMainPrompts());
-}
+};
 
 function addDepartment() {
-    db.createDepartment().then(() => loadMainPrompts());
+    prompt([
+        {
+            type: 'input',
+            value: 'deptname',
+            message: 'Enter new department name.'
+        }
+    ])
+    .then((res) => {
+        let deptName = res;
+        db.createDepartment(deptName);
+    })
+    .then(() => loadMainPrompts());
 }
 
 function addRole() {
-    db.createRole().then(() => loadMainPrompts());
-}
+    prompt([
+        {
+            type: 'input',
+            value: 'rolename',
+            message: 'Enter new department name.'
+        }
+    ])
+    .then((res) => {
+        let deptname = res;
+        db.createDepartment(deptname);
+    })
+    .then(() => loadMainPrompts());
+};
 
 function addEmployee() {
     db.createEmployee().then(() => loadMainPrompts());
-}
+};
 
 function updateEmployee() {
-    db.updateEmployee().then(() => loadMainPrompts());
-}
+    db.updateEmployeeRole().then(() => loadMainPrompts());
+};
 
+function exitProgram() {
+    process.exit();
+};

@@ -125,22 +125,71 @@ function addRole() {
         {
             type: 'input',
             value: 'rolename',
-            message: 'Enter new department name.'
-        }
+            message: 'Enter new role name.'
+        },
+        {
+            type: 'input',
+            value: 'salary',
+            message: 'Enter new role salary.'
+        },
+        {
+            type: 'input',
+            value: 'department',
+            message: 'Enter new role department.'
+        },
     ])
     .then((res) => {
-        let deptname = res;
-        db.createDepartment(deptname);
+        db.createRole(res);
     })
     .then(() => loadMainPrompts());
 };
 
 function addEmployee() {
-    db.createEmployee().then(() => loadMainPrompts());
+    prompt([
+        {
+            type: 'input',
+            value: 'first',
+            message: 'Enter new employee first name.'
+        },
+        {
+            type: 'input',
+            value: 'last',
+            message: 'Enter new employee last name.'
+        },
+        {
+            type: 'input',
+            value: 'role',
+            message: 'Enter new employee role.'
+        },
+        {
+            type: 'input',
+            value: 'manager',
+            message: 'Enter new employee manager.'
+        },
+    ])
+    .then((res) => {
+        db.createEmployee(res);
+    })
+    .then(() => loadMainPrompts());
 };
 
 function updateEmployee() {
-    db.updateEmployeeRole().then(() => loadMainPrompts());
+    prompt([
+        {
+            type: 'input',
+            value: 'id',
+            message: 'Enter ID of employee you wish to update'
+        },
+        {
+            type: 'input',
+            value:'role',
+            message: 'Enter new role.'
+        }
+    ])
+    .then((res) => {
+        db.updateEmployeeRole(res)
+    })    
+    .then(() => loadMainPrompts());
 };
 
 function exitProgram() {

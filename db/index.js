@@ -33,17 +33,17 @@ class DB {
   }
   createRole(res) {
     return this.connection.promise().query(
-      `INSERT INTO department (name) VALUES ('${deptName}')`
+      `INSERT INTO role (name, salary, departnment) VALUES ('${res.name}', '${res.salary}', '${res.department}')`
     )
   }
   createEmployee(res) {
     return this.connection.promise().query(
-      `INSERT INTO employee (name) VALUES ('${deptName}')`
+      `INSERT INTO employee (first_name, last_name, role_id, manager_id)  VALUES ('${res.first}', '${res.last}', '${res.role}', '${res.manager}')`
     )
   }
   updateEmployeeRole(res) {
     return this.connection.promise().query(
-      `UPDATE employee (role) VALUES ('${empRole}')`
+      `UPDATE employee SET (role) VALUES ('${empRole}')`
     )
   }
 }

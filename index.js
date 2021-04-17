@@ -81,6 +81,7 @@ function viewDepartments() {
         console.log("\n");
         console.table(departments);
       })
+      .catch((err) => console.error(err))
       .then(() => loadMainPrompts());
 };
 
@@ -109,12 +110,12 @@ function addDepartment() {
     prompt([
         {
             type: 'input',
-            value: 'deptname',
+            name: 'deptName',
             message: 'Enter new department name.'
         }
     ])
     .then((res) => {
-        let deptName = res;
+        let deptName = res.deptName;
         db.createDepartment(deptName);
     })
     .then(() => loadMainPrompts());
@@ -124,17 +125,17 @@ function addRole() {
     prompt([
         {
             type: 'input',
-            value: 'rolename',
+            name: 'title',
             message: 'Enter new role name.'
         },
         {
             type: 'input',
-            value: 'salary',
+            name: 'salary',
             message: 'Enter new role salary.'
         },
         {
             type: 'input',
-            value: 'department',
+            name: 'department_id',
             message: 'Enter new role department.'
         },
     ])
@@ -148,22 +149,22 @@ function addEmployee() {
     prompt([
         {
             type: 'input',
-            value: 'first',
+            name: 'first_name',
             message: 'Enter new employee first name.'
         },
         {
             type: 'input',
-            value: 'last',
+            name: 'last_name',
             message: 'Enter new employee last name.'
         },
         {
             type: 'input',
-            value: 'role',
+            name: 'role_id',
             message: 'Enter new employee role.'
         },
         {
             type: 'input',
-            value: 'manager',
+            name: 'manager_id',
             message: 'Enter new employee manager.'
         },
     ])
@@ -174,22 +175,50 @@ function addEmployee() {
 };
 
 function updateEmployee() {
-    prompt([
-        {
-            type: 'input',
-            value: 'id',
-            message: 'Enter ID of employee you wish to update'
-        },
-        {
-            type: 'input',
-            value:'role',
-            message: 'Enter new role.'
-        }
-    ])
-    .then((res) => {
-        db.updateEmployeeRole(res)
-    })    
-    .then(() => loadMainPrompts());
+    db.findAllEmployees()
+    .then(([rows]) => {
+      let employees = rows;
+      //map employee names from call
+      let employeeArr = employees.map(employee => {
+          let choices = {
+              name: `${employee.first_name} ${employee.last_name}`,
+              value: employee.id
+          }
+          return choices;
+      })
+      prompt([
+          {
+            type: 'list',
+            name: 'emp_id',
+            message: 'Which employee would you like to update?',
+            choices: employeeArr
+          }
+      ])
+      .then((employee) => {
+          db.findAllRoles()
+          .then(([roleObj]) => {
+              let roleArr = roleObj.map(role => {
+                  let roleChoices = {
+                      name: `${role.title}`,
+                      value: role.id
+                  }
+                  return roleChoices
+              })
+              prompt([
+                  {
+                      type: 'list',
+                      name: 'role_id',
+                      message: 'Choose new role for employee.',
+                      choices: roleArr
+                  }
+              ])
+              .then((role) => {
+                db.updateEmployeeRole(employee.emp_id, role.role_id)
+              })
+            .then(() => loadMainPrompts());
+          })
+      })    
+    })
 };
 
 function exitProgram() {
